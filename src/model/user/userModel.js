@@ -1,0 +1,49 @@
+const { Sequelize, DataTypes } = require("sequelize")
+
+const seq = require("../../db/seq")
+
+/**
+ * 用户表
+ */
+const User = seq.define("user", {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 2,
+        comment: "用户角色 1 管理员 2 普通用户",
+    },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "http://localhost/8888/default.png",
+      comment: "用户头像",
+    },
+    created: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        allowNull: false
+    }
+}, {
+    tableName: 'users',
+    timestamps: false
+})
+
+// 这将检查数据库中表的当前状态(它具有哪些列,它们的数据类型等)
+// User.sync({ alter: true });
+console.log("用户模型表刚刚(重新)创建！");
+
+module.exports = User

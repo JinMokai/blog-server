@@ -21,7 +21,7 @@ const User = seq.define("user", {
         allowNull: false
     },
     role: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.CHAR(1),
         allowNull: false,
         defaultValue: 2,
         comment: "用户角色 1 管理员 2 普通用户",
@@ -31,6 +31,12 @@ const User = seq.define("user", {
       allowNull: true,
       defaultValue: "http://localhost/8888/default.png",
       comment: "用户头像",
+    },
+    status: {
+        type: DataTypes.CHAR(1),
+        allowNull: false,
+        defaultValue: 1,
+        comment: "是否禁用用户: 0 表示禁用 1 表示不禁用"
     },
     created: {
         type: DataTypes.DATE,

@@ -13,7 +13,7 @@ const auth = async (ctx, next) => {
         return ctx.app.emit("error", ER(errorCode, "您没有权限访问，请先登录"), ctx)
     }
     try {
-        jwt.verify(token, JWT_SECRET)
+        const user = jwt.verify(token, JWT_SECRET)
         // 将user加入state里面  ctx.state 命名空间https://www.koajs.com.cn/#:~:text=ctx.-,state,-%E6%8E%A8%E8%8D%90%E7%9A%84%E5%91%BD%E5%90%8D
         ctx.state.user = user
     } catch (err) {
@@ -39,7 +39,7 @@ const adminAuth = async (ctx, next) => {
     const { role } = ctx.state.user
     if (Number(role) !== 1) {
         console.error("普通用户查看")
-        return ctx.app.emit("error", Er(errorCode, "普通用户仅查看"), ctx)
+        return ctx.app.emit("error", ER(errorCode, "普通用户仅查看"), ctx)
     }
     await next()
 }

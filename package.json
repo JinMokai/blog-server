@@ -1,12 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "这是一个基于koajs的服务端，来完成博客管理系统",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./main.js"
   },
-  "author": "",
+  "author": {
+    "name": "Jinmark-kai",
+    "email": "ch_kaijack@outlook.com",
+    "url": "https://chkaiblog.eu.org"
+  },
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -24,6 +24,6 @@ const categary = seq.define("categary", {
     tableName: 'categories',
     timestamps: false
 })
-await categary.sync({ force: true });
+// categary.sync({ alter: true });
 console.log("分类模型表刚刚(重新)创建！");
 module.exports = categary

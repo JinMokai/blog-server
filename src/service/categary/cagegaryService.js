@@ -67,7 +67,7 @@ class categaryService {
     /**
      * 条件分页查找分页列表
      */
-    async getCategoryList({ current, size, name }) {
+    async getCategaryList({ current, size, name }) {
         const whereOpt = {}
         const offset = (current - 1) * size
         const limit = size * 1
@@ -87,6 +87,19 @@ class categaryService {
             // 当前页码  页码数量 总数  结果值
             current, size, total: count, list: rows
         }
+    }
+
+    /**
+     * 通过id来获取分类名称
+     * @param {Number} current 
+     * @param {Number} size 
+     */
+    async getCategaryNameById(id) {
+        const res = await Categary.findOne({
+            attributes: ['name'],
+            where: { id }
+        })
+        return res.dataValues
     }
 }
 

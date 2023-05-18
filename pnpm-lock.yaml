@@ -34,6 +34,9 @@ dependencies:
   koa-static:
     specifier: ^5.0.0
     version: registry.npmmirror.com/koa-static@5.0.0
+  moment:
+    specifier: ^2.29.4
+    version: registry.npmmirror.com/moment@2.29.4
   mysql2:
     specifier: ^3.3.1
     version: registry.npmmirror.com/mysql2@3.3.1

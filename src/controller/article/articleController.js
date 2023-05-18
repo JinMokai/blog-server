@@ -6,6 +6,21 @@ const errcode = CODE.CATEGARY
 
 class articleController {
     /**
+     * 获取文章信息
+     * @param {*} ctx 
+     */
+    async getArticleById(ctx) {
+        const { id } = ctx.params
+        try {
+            const res = await articleService.getArticleById(id)
+            // @bug 过度依赖service层数据 直接res 会出现不是理想状态的boolean类型
+            ctx.body = R("获取文章信息成功", res)
+        } catch (err) {
+            console.error("获取文章信息失败",err)
+            return ctx.app.emit("error", ER(errcode, "获取文章信息失败"), ctx)
+        }
+    }
+    /**
      * 新增文章
      */
     async createArticle(ctx) {
@@ -125,6 +140,68 @@ class articleController {
             return ctx.app.emit("error", ER(errcode, "分页获取文章失败"), ctx)
         }
     }
+
+    // 以下为前台功能
+
+    /**
+     * 分页前台获取文章(置顶和时间倒序)
+     * @param {Number} current 当前页
+     * @param {Number} size 页数
+     */
+    async homeGetArticleList(ctx) {
+        const { current, size } = ctx.params
+        try {
+            const res = await articleService.homeGetArticleList(current, size)
+            ctx.body = R("分页前台获取文章成功", res)
+        } catch (err) {
+            console.error("分页前台获取文章失败", err)
+            return ctx.app.emit("error", ER(errcode, "分页前台获取文章失败"), ctx)
+        }
+    }
+
+    /**
+     * 分页前台通过分类获取文章信息
+     * @param {*} ctx 
+     */
+    async homeGetArticleByCatId(ctx) {
+        try {
+            const res = await articleService.homeGetArticleByCatId(ctx.request.body)
+            ctx.body = R("分页前台通过分类获取文章信息成功", res)
+        } catch (err) {
+            console.error("分页前台通过分类获取文章信息失败", err)
+            return ctx.app.emit("error", ER(errcode, "分页前台通过分类获取文章信息失败"), ctx)
+        }
+    }
+
+    /**
+     * 通过文章id获取上下文
+     * @param {*} ctx 
+     */
+    async getRecommendArticleById(ctx) {
+        const { id } = ctx.params
+        try {
+            const res = await articleService.getRecommendArticleById(id)
+            ctx.body = R("文章获取上下文成功", res)
+        } catch (err) {
+            console.error("文章获取上下文失败", err)
+            return ctx.app.emit("error", ER(errcode, "文章获取上下文失败"), ctx)
+        }
+    }
+
+    /**
+     * 获取热门文章
+     * @param {*} ctx 
+     */
+    async getHotArticle(ctx) {
+        try {
+            const res = await articleService.getHotArticle()
+            ctx.body = R("文章获取成功", res)
+        } catch (err) {
+            console.error("文章获取失败", err)
+            return ctx.app.emit("error", ER(errcode, "文章获取失败"), ctx)
+        }
+    }
+
 }
 
 module.exports = new articleController()

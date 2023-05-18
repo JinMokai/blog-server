@@ -30,6 +30,15 @@ router.post("/getArticleList", auth, articleController.getArticleList)
 // ----------------------后台管理功能模块  end----------------------
 
 // ----------------------前台管理功能模块  start----------------------
-
+// 分页前台获取文章(置顶和时间倒序)
+router.get("/homeGetArticleList/:current/:size", articleController.homeGetArticleList)
+// 分页前台通过分类获取文章信息
+router.post("/homeGetArticleByCatId", articleController.homeGetArticleByCatId)
+// 前台通过获取 文章关联上下文
+router.get("/getRecommendArticleById/:id", articleController.getRecommendArticleById)
+// 获取热门文章
+router.get("/getHotArticle", articleController.getHotArticle);
 // ----------------------前台管理功能模块  end----------------------
+// 通过id获取文章
+router.get("/getArticleById/:id", articleController.getArticleById)
 module.exports = router

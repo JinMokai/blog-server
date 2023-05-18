@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize")
 
 const seq = require("../../db/seq")
+var moment = require("moment")
 /**
  * 文章表
  */
@@ -85,14 +86,20 @@ const article = seq.define("article", {
         comment: "置顶文章 0-置顶 1-不置顶 默认:1"
     },
     created: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false
+        type: Sequelize.DATE,
+        // @bug 时间部分 有问题 ?
+        defaultValue: Sequelize.NOW,
+        get() {
+            return moment(this.getDataValue("created")).format("YYYY-MM-DD HH:mm:ss")
+        }
     },
     updated: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false
+        type: Sequelize.DATE,
+        // @bug 时间部分 有问题 ?
+        defaultValue: Sequelize.NOW,
+        get() {
+            return moment(this.getDataValue("updated")).format("YYYY-MM-DD HH:mm:ss")
+        }
     }
 }, {
     tableName: 'articles',

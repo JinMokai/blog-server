@@ -1,4 +1,6 @@
 const Article = require("../../model/article/articleModel")
+const { getCategaryNameById } = require("../../controller/categary/categaryController")
+const { getUserNameById } = require("../../controller/user/userController")
 const { Op, where } = require("sequelize")
 
 class articleService {
@@ -129,6 +131,23 @@ class articleService {
             offset, limit, where: whereOpt, attributes: { exclude: ['content', 'updated', 'article_cover'] },
             order: [['created', 'DESC']]
         })
+        // 使用promiseList来接受分类名称
+        let promiseList = []
+        promiseList = rows.map(async v => {
+            // @bug 可以考虑优化
+            let obj = {
+                categaryName: await getCategaryNameById(v.dataValues.cat_id),
+            }
+            return obj
+        })
+
+        await Promise.all(promiseList).then(res => {
+            if (res.length) {
+                rows.forEach((v, i) => {
+                    v.dataValues.categaryName = res[i].categaryName.name
+                })
+            }
+        })
 
         return {
             current,
@@ -136,6 +155,185 @@ class articleService {
             list: rows,
             total: count
         }
+    }
+
+    /**
+     * 分页前台获取文章(置顶和时间倒序)
+     * @param {Number} current 当前页
+     * @param {Number} size 页数
+     */
+    async homeGetArticleList(current, size) {
+        const offset = (current - 1) * size
+        const limit = size * 1
+
+        const { count, rows } = await Article.findAndCountAll({
+            order: [
+                ['is_top', 'ASC'],
+                ['created', 'DESC']
+            ],
+            limit, offset, attributes: { exclude: ['content', 'article_cover'] }, where: { status: 1 }
+        })
+        // 使用promiseList来接受分类名称
+        let promiseList = []
+        promiseList = rows.map(async v => {
+            // @bug 可以考虑优化
+            let obj = {
+                categaryName: await getCategaryNameById(v.dataValues.cat_id),
+            }
+            return obj
+        })
+        await Promise.all(promiseList).then(res => {
+            if (res.length) {
+                rows.forEach((v, i) => {
+                    v.dataValues.categaryName = res[i].categaryName.name
+                })
+            }
+        })
+
+        return {
+            current,
+            size,
+            list: rows,
+            total: count
+        }
+    }
+
+    /**
+    * 通过分类 ID 分页获取前台文章信息
+    *
+    * @param {Object} options - 参数对象
+    * @param {number} options.current - 当前页码（从 1 开始）
+    * @param {number} options.size - 每页数据条数
+    * @param {number} options.cat_id - 文章所属分类 ID
+    * @returns {Promise<Object>} 返回一个 Promise，包含以下字段：
+    * - {number} current - 当前页码（同输入参数）
+    * - {number} size - 每页数据条数（同输入参数）
+    * - {Array.<Object>} list - 文章信息列表
+    * - {number} total - 所有符合条件的文章数量
+    */
+    async homeGetArticleByCatId({ current, size, cat_id }) {
+        const offset = (current - 1) * size
+        const limit = size * 1
+        // count: 总数 rows 各文章信息
+        const { count, rows } = await Article.findAndCountAll({
+            limit, offset,
+            order: [['created', 'DESC']],
+            where: {
+                cat_id, status: 1
+            },
+            attributes: ["id", "title", "article_cover", "created"]
+        })
+
+        return {
+            current,
+            size,
+            list: rows,
+            total: count
+        }
+    }
+
+    /**
+    * 通过文章 ID 获取其相邻文章的信息
+    *
+    * @param {number} articleID - 文章 ID
+    * @returns {Promise<Object>} 返回一个 Promise，包含以下字段：
+    * - {Object} contentPrevious - 上一篇文章的信息（如果不存在，则为当前文章）
+    *   - {number} id - 上一篇文章的 ID
+    *   - {string} title - 上一篇文章的标题
+    * - {Object} contentNext - 下一篇文章的信息（如果不存在，则为当前文章）
+    *   - {number} id - 下一篇文章的 ID
+    *   - {string} title - 下一篇文章的标题
+    */
+    async getRecommendArticleById(articleID) {
+        // 上一篇文章
+        let contentPrevious = await Article.findOne({
+            where: {
+                id: {
+                    [Op.lt]: articleID
+                },
+                status: 1
+            },
+            attributes: ["id", "title"],
+            order: [["id", "DESC"]]
+        })
+
+        // 下一篇文章
+        let contentNext = await Article.findOne({
+            where: {
+                id: {
+                    [Op.gt]: articleID
+                },
+                status: 1
+            },
+            attributes: ["id", "title"],
+            order: [["id", "ASC"]]
+        })
+        // 如果上一篇文章不存在 用当前页面表示
+        if (!contentPrevious) {
+            contentPrevious = await Article.findOne({
+                where: {
+                    id: {
+                        [Op.eq]: articleID
+                    },
+                    status: 1
+                },
+                attributes: ["id", "title"],
+                order: [["id", "ASC"]]
+            })
+        }
+
+        // 如果下一篇文章不存在 用当前页面表示
+        if (!contentNext) {
+            contentNext = await Article.findOne({
+                where: {
+                    id: {
+                        [Op.eq]: articleID
+                    },
+                    status: 1
+                },
+                attributes: ["id", "title"],
+                order: [["id", "ASC"]]
+            })
+        }
+
+        return {
+            contentPrevious,
+            contentNext
+        }
+
+    }
+
+    // 获取热门文章 获取前五个 通过访问次数来确定
+    async getHotArticle() {
+        const res = await Article.findAll({
+            where: {
+                status: 1
+            },
+            limit: 5,
+            attributes: ["id", "title", "view_count"],
+            order: [["view_count", "DESC"]]
+        })
+        return res
+    }
+
+    /**
+     * 获取文章信息
+     */
+    async getArticleById(id) {
+        let article = await Article.findByPk(id)
+        if (article) {
+            // 前端访问这个 浏览量+1
+            await article.increment({ view_count: 1 })
+        }
+        // 通过分类id获取分类名称
+        const catName = await getCategaryNameById(article.cat_id)
+        // 获取文章作者
+        const username = await getUserNameById(id)
+
+        if (article) {
+            Object.assign(article.dataValues, { cat_name: catName.name, author_name: username.username })
+        }
+        return article
     }
 }
 

@@ -7,6 +7,19 @@ const errcode = CODE.USER
 
 class UserController {
     /**
+     * 通过id查询用户名
+     * @param {Number} id 
+     */
+    async getUserNameById(id) {
+        try {
+            const res = await userService.getUserNameById(id)
+            return res
+        } catch (err) {
+           console.error("查询用户名失败",err) 
+           return ctx.app.emit("error", ER(errcode,"查询用户名失败"), ctx)
+        }
+    }
+    /**
      * 根据id查询非禁用用户信息
      * @param {*} ctx 
      */

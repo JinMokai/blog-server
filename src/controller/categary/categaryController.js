@@ -68,15 +68,30 @@ class categaryController {
      * 条件分页查找分页列表
      * @param {*} ctx 
      */
-    async getCategoryList(ctx) {
+    async getCategaryList(ctx) {
         try {
             // 当前页 页数 分类名
             const { current, size, name } = ctx.request.body
-            const res = await categaryService.getCategoryList({ current, size, name })
+            const res = await categaryService.getCategaryList({ current, size, name })
             ctx.body = R("分页查询成功", res)
         } catch (err) {
             console.error(err)
             return ctx.app.emit("error", ER(errcode, "分页查询失败"), ctx)
+        }
+    }
+
+    /**
+     * 通过id来获取分类名称
+     */
+    async getCategaryNameById(id) {
+        try {
+            // const { id } = ctx.params
+            const res = await categaryService.getCategaryNameById(id)
+            // ctx.body = R("获取分类成功", res)
+            return res
+        } catch (err) {
+            console.error("获取分类名称错误")
+            return ctx.app.emit("error", ER(errcode, "获取分类名称错误"), ctx)
         }
     }
 }

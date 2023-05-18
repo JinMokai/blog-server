@@ -4,6 +4,19 @@ const { Op, where } = require("sequelize");
 
 class UserService {
     /**
+     * 通过id查询用户名
+     * @param {Number} id
+     * @returns {Promise<Object>} 返回一个Promise,包含以下字段:
+     *  - {String} username - 用户名
+     */
+    async getUserNameById(id) {
+        const res = await User.findOne({
+            attributes: ['username'],
+            where: { id }
+        })
+        return res.dataValues
+    }
+    /**
      * 查询所有用户
      * @returns Object
      */
@@ -139,8 +152,8 @@ class UserService {
                 [Op.like]: `%${username}%`
             }
         })
-// Executing (default): SELECT count(*) AS `count` FROM `users` AS `user` WHERE `user`.`status` = 1 AND `user`.`role` = 2 AND `user`.`username` LIKE '%i%';
-// Executing (default): SELECT `id`, `username`, `role`, `avatar`, `status`, `created` FROM `users` AS `user` WHERE `user`.`status` = 1 AND `user`.`role` = 2 AND `user`.`username` LIKE '%i%' LIMIT 0, 1;
+        // Executing (default): SELECT count(*) AS `count` FROM `users` AS `user` WHERE `user`.`status` = 1 AND `user`.`role` = 2 AND `user`.`username` LIKE '%i%';
+        // Executing (default): SELECT `id`, `username`, `role`, `avatar`, `status`, `created` FROM `users` AS `user` WHERE `user`.`status` = 1 AND `user`.`role` = 2 AND `user`.`username` LIKE '%i%' LIMIT 0, 1;
         const { count, rows } = await User.findAndCountAll({
             offset, limit, attributes: { exclude: ['password'] },
             where: whereOpt

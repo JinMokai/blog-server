@@ -21,5 +21,5 @@ router.post("/delete", auth, adminAuth, categaryMiddle.verifyCategary, categaryC
 // 获取所有分类
 router.post("/getCategaryAll", categaryController.getCategaryAll)
 // 分页查询分类
-router.post("/getCategoryList", categaryController.getCategoryList)
+router.post("/getCategoryList", categaryController.getCategaryList)
 module.exports = router

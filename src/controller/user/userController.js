@@ -16,7 +16,7 @@ class UserController {
             return res
         } catch (err) {
            console.error("查询用户名失败",err) 
-           return ctx.app.emit("error", ER(errcode,"查询用户名失败"), ctx)
+        //    return ctx.app.emit("error", ER(errcode,"查询用户名失败"), ctx)
         }
     }
     /**

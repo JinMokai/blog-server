@@ -1,3 +1,4 @@
+const moment = require("moment")
 const Article = require("../../model/article/articleModel")
 const { getCategaryNameById } = require("../../controller/categary/categaryController")
 const { getUserNameById } = require("../../controller/user/userController")
@@ -47,10 +48,12 @@ class articleService {
         let res
         try {
             res = await Article.update(article, { where: { id: article.id } })
+            // 每次文章修改 都更新时间
+            await Article.update({ updated: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss") }, { where: { id: article.id } })
         } catch (err) {
             console.error(err)
         }
-        console.log(res)
+        console.log(res,'updateArticle ch_kai:')
         return res[0] > 0 ? true : false
     }
 
@@ -328,12 +331,27 @@ class articleService {
         // 通过分类id获取分类名称
         const catName = await getCategaryNameById(article.cat_id)
         // 获取文章作者
-        const username = await getUserNameById(id)
+        const username = await getUserNameById(article.user_id)
 
         if (article) {
             Object.assign(article.dataValues, { cat_name: catName.name, author_name: username.username })
         }
         return article
+    }
+
+    /**
+     * 文章点赞
+     * @param {Number} id 
+     */
+    async articleThumbsUp(id) {
+        let article = await Article.findByPk(id)
+        if (article) {
+            await article.increment({ like_count: 1 })
+            return true
+        } else {
+            // @bug 对控制层来说  这里传入false是不合规矩的
+            return false
+        }
     }
 }
 

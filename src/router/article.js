@@ -16,7 +16,7 @@ router.get("/", async (ctx, next) => {
 // 新增文章
 router.post("/add", auth, adminAuth, articleMiddle.verifyArticleParam, articleMiddle.createJudgeTitleExist, articleController.createArticle)
 // 修改文章
-router.put("/update", auth, adminAuth, articleMiddle.verifyArticleParam, articleMiddle.updateJudgeTitleExist, articleController.updateArticle)
+router.put("/update", auth, adminAuth, articleMiddle.verifyArticleParam, articleController.updateArticle)
 // 修改文章置顶状态
 router.put("/updateTop/:id/:isTop", auth, adminAuth, articleMiddle.updateTopParams, articleController.updateTop)
 // 删除文章 0 永久删除 1,2 回收站
@@ -38,6 +38,8 @@ router.post("/homeGetArticleByCatId", articleController.homeGetArticleByCatId)
 router.get("/getRecommendArticleById/:id", articleController.getRecommendArticleById)
 // 获取热门文章
 router.get("/getHotArticle", articleController.getHotArticle);
+// 文章点赞
+router.get("/articleThumbsUp/:id", articleController.articleThumbsUp)
 // ----------------------前台管理功能模块  end----------------------
 // 通过id获取文章
 router.get("/getArticleById/:id", articleController.getArticleById)

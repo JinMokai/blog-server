@@ -29,6 +29,7 @@ const article = seq.define("article", {
         type: DataTypes.TEXT,
         allowNull: false,
         require: true,
+        // @bug 通过sequlize的设置器来转义
         comment: "文章内容 不能为空 必填"
     },
     article_cover: {
@@ -87,23 +88,44 @@ const article = seq.define("article", {
     },
     created: {
         type: Sequelize.DATE,
-        // @bug 时间部分 有问题 ?
+        // @bug 时间部分 有问题 ?  @解决：第一次插入时间修改为YYYY-MM-DD HH:mm:ss  每次文章内容修改就更新时间
         defaultValue: Sequelize.NOW,
         get() {
             return moment(this.getDataValue("created")).format("YYYY-MM-DD HH:mm:ss")
+        },
+        set(value) {
+            this.setDataValue("created", value)
         }
     },
     updated: {
         type: Sequelize.DATE,
-        // @bug 时间部分 有问题 ?
+        // @bug 时间部分 有问题 ?  @解决：第一次插入时间修改为YYYY-MM-DD HH:mm:ss  每次文章内容修改就更新时间
         defaultValue: Sequelize.NOW,
         get() {
             return moment(this.getDataValue("updated")).format("YYYY-MM-DD HH:mm:ss")
+        },
+        set(value) {
+            this.setDataValue("updated", value)
         }
     }
 }, {
     tableName: 'articles',
-    timestamps: false
+    timestamps: false,
+    hooks: {
+        beforeCreate: (article, options) => {
+            // 计算文章的字数
+            const wordCount = article.content.length;
+            // 计算阅读时长
+            const readingSpeed = 200; // 假设阅读速度为 200 字/分钟
+            const readingTime = Math.ceil(wordCount / readingSpeed);
+            // 设置阅读时长字段
+            article.read_time = readingTime;
+
+            // 每次插入更新时间
+            article.created = moment(article.created).format("YYYY-MM-DD HH:mm:ss")
+            article.updated = moment(article.updated).format("YYYY-MM-DD HH:mm:ss")
+        }
+    }
 })
 // article.sync({ alter: true });
 console.log("文章模型表刚刚(重新)创建！");

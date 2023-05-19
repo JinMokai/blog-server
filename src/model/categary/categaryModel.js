@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize")
+const moment = require("moment")
 
 const seq = require("../../db/seq")
 /**
@@ -16,14 +17,25 @@ const categary = seq.define("categary", {
         allowNull: false
     },
     created: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false
-    }
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+        get() {
+            return moment(this.getDataValue("created")).format("YYYY-MM-DD HH:mm:ss")
+        },
+        set(value) {
+            this.setDataValue("created", value)
+        }
+    },
 }, {
     tableName: 'categories',
-    timestamps: false
+    timestamps: false,
+    hooks: {
+        beforeCreate: (article, options) => {
+            // 每次插入更新时间
+            article.created = moment(article.created).format("YYYY-MM-DD HH:mm:ss")
+        }
+    }
 })
-// categary.sync({ alter: true });
+categary.sync({ alter: true });
 console.log("分类模型表刚刚(重新)创建！");
 module.exports = categary

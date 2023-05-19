@@ -16,7 +16,7 @@ class articleController {
             // @bug 过度依赖service层数据 直接res 会出现不是理想状态的boolean类型
             ctx.body = R("获取文章信息成功", res)
         } catch (err) {
-            console.error("获取文章信息失败",err)
+            console.error("获取文章信息失败", err)
             return ctx.app.emit("error", ER(errcode, "获取文章信息失败"), ctx)
         }
     }
@@ -54,8 +54,13 @@ class articleController {
             const { category, ...articleRest } = ctx.request.body.article
             articleRest.cat_id = await createCategoryAndArticle(category)
             const res = await articleService.updateArticle(articleRest)
-            ctx.body = R("修改文章成功", res)
-            await t.commit()
+            if (res) {
+                ctx.body = R("修改文章成功", res)
+                await t.commit()
+            } else {
+                ctx.body = R("没有到修改文章或修改文章失败", res)
+                t.rollback();
+            }
         } catch (err) {
             console.error(err)
             // 错误回滚
@@ -202,6 +207,25 @@ class articleController {
         }
     }
 
+    /**
+     * 文章点赞
+     * @param {*} ctx 
+     */
+    async articleThumbsUp(ctx) {
+        // 获取文章id
+        const { id } = ctx.params
+        try {
+            const res = await articleService.articleThumbsUp(id)
+            if (res) {
+                ctx.body = R("文章点赞成功", res)
+            } else {
+                ctx.body = R("文章点赞失败", res)
+            }
+        } catch (err) {
+            console.error("文章点赞失败", err)
+            return ctx.app.emit("error", ER(errcode, "文章点赞失败"), ctx)
+        }
+    }
 }
 
 module.exports = new articleController()

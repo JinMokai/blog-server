@@ -1,4 +1,3 @@
-const UserService = require("../../service/user/userService")
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../config/config.default");
 const { R, ER, CODE } = require("../../result/R");
@@ -41,7 +40,7 @@ class UserController {
      */
     async getUserAll(ctx) {
         try {
-            const res = await UserService.getUserAll()
+            const res = await userService.getUserAll()
             ctx.body = R("查询成功", res)
         } catch (err) {
             console.error(err)
@@ -55,7 +54,7 @@ class UserController {
      */
     async register(ctx) {
         try {
-            let res = await UserService.createUser(ctx.request.body)
+            let res = await userService.createUser(ctx.request.body)
 
             ctx.body = R("注册成功", {
                 id: res.id,
@@ -75,7 +74,7 @@ class UserController {
     async login(ctx) {
         try {
             const { username } = ctx.request.body
-            const { password, ...res } = await UserService.getOneUserInfo({ username })
+            const { password, ...res } = await userService.getOneUserInfo({ username })
             ctx.body = R("用户登录成功", {
                 token: jwt.sign(res, JWT_SECRET, { expiresIn: "1d" }),
                 username: res.username,
@@ -98,8 +97,8 @@ class UserController {
         const { id } = ctx.state.user
         const { username } = ctx.request.body
         try {
-            // 通过UserService层修改用户数据
-            let res = await UserService.updateUserInfo(id, username)
+            // 通过userService层修改用户数据
+            let res = await userService.updateUserInfo(id, username)
             ctx.body = R("用户修改成功", res)
         } catch (err) {
             console.error(err)
@@ -134,7 +133,7 @@ class UserController {
     async updateRole(ctx) {
         const { id, role } = ctx.params
         try {
-            const res = await UserService.updateRole(id, role)
+            const res = await userService.updateRole(id, role)
             // @bug 如果用户权限不变，不应该修改
             ctx.body = R("修改用户成功", res)
         } catch (err) {
@@ -151,7 +150,7 @@ class UserController {
     async adminUpdateUserInfo(ctx) {
         const { id, username } = ctx.request.body
         try {
-            const res = await UserService.adminUpdateUserInfo(id, username)
+            const res = await userService.adminUpdateUserInfo(id, username)
             ctx.body = R("修改用户名成功", res)
         } catch (err) {
             console.error(err)

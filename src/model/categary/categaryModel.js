@@ -30,12 +30,12 @@ const categary = seq.define("categary", {
     tableName: 'categories',
     timestamps: false,
     hooks: {
-        beforeCreate: (article, options) => {
+        beforeCreate: (categary, options) => {
             // 每次插入更新时间
-            article.created = moment(article.created).format("YYYY-MM-DD HH:mm:ss")
+            categary.created = moment(categary.created).format("YYYY-MM-DD HH:mm:ss")
         }
     }
 })
-categary.sync({ alter: true });
+// categary.sync({ alter: true });
 console.log("分类模型表刚刚(重新)创建！");
 module.exports = categary

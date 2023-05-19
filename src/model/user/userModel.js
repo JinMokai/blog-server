@@ -52,15 +52,15 @@ const User = seq.define("user", {
     tableName: 'users',
     timestamps: false,
     hooks: {
-        beforeCreate: (article, options) => {
+        beforeCreate: (User, options) => {
             // 每次插入更新时间
-            article.created = moment(article.created).format("YYYY-MM-DD HH:mm:ss")
+            User.created = moment(User.created).format("YYYY-MM-DD HH:mm:ss")
         }
     }
 })
 
 // 这将检查数据库中表的当前状态(它具有哪些列,它们的数据类型等)
-User.sync({ alter: true });
+// User.sync({ alter: true });
 console.log("用户模型表刚刚(重新)创建！");
 
 module.exports = User

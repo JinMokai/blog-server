@@ -8,7 +8,9 @@ const CODE = {
     USER: 1001, // 用户状态码
     AUTH: 1002, // 权限认证状态码
     CATEGARY: 1003, // 分类状态码
-    ARTICLE: 1004
+    ARTICLE: 1004, // 文章状态码
+    COMMENT: 1005, // 评论状态码
+    MESSAGE: 1006 // 留言状态码
 }
 /**
  * 返回成功结果

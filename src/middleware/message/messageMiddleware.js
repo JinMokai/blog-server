@@ -46,6 +46,25 @@ const verifyMessageParams = async (ctx, next) => {
     await next()
 }
 
+/**
+ * 校验分页留言参数是否合法
+ * @param {*} ctx 
+ * @param {*} next 
+ */
+const verifyMessagePageParams = async (ctx, next) => {
+    const { current, size } = ctx.request.body
+    try {
+        if (typeof current != 'number' || typeof size != 'number') {
+            ctx.body = ER("参数格式不对")
+            return ctx.app.emit("error", ER(errCode, "参数格式不对"))
+        }
+    } catch (err) {
+        console.log("参数格式不对", err)
+        return ctx.app.emit("error", ER(errCode, "参数格式不对"))
+    }
+    await next()
+}
 module.exports = {
-    verifyMessageParams
+    verifyMessageParams,
+    verifyMessagePageParams
 }

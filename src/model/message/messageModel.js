@@ -37,7 +37,7 @@ const Message = seq.define("message", {
         type: DataTypes.CHAR(1),
         allowNull: false,
         defaultValue: 0,
-        comment: "审核状态 0-未审核 1-已审核 不为空 默认为0"
+        comment: "审核状态 0-不通过 1-已通过 不为空 默认为0"
     },
     created: {
         type: Sequelize.DATE,

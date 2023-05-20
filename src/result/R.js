@@ -10,7 +10,9 @@ const CODE = {
     CATEGARY: 1003, // 分类状态码
     ARTICLE: 1004, // 文章状态码
     COMMENT: 1005, // 评论状态码
-    MESSAGE: 1006 // 留言状态码
+    MESSAGE: 1006, // 留言状态码
+    LINKS: 1007, // 友链状态码
+    CONFIG: 1008 // 配置状态码
 }
 /**
  * 返回成功结果

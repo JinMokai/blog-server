@@ -6,6 +6,7 @@ const logger = require("koa-logger")
 const onerror = require("koa-onerror")
 const { koaBody } = require("koa-body");
 const static = require("koa-static")
+const cors = require('koa2-cors');
 
 const router = require("./src/router/index")
 const errHandler = require("./src/app/errHandler")
@@ -15,6 +16,15 @@ const { ER,CODE } = require("./src/result/R")
 const koa = require("koa")
 const app = new koa()
 
+// 解决跨域问题
+app.use(cors({
+    // 指定允许跨域的域名，若为 * 则允许所有域名跨域
+    origin: '*',
+    // 指定允许的方法
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+    // 是否允许带 Cookie
+    credentials: true
+  }));
 onerror(app)
 koaBody({
     multipart: true, // 支持文件上传

@@ -34,6 +34,9 @@ dependencies:
   koa-static:
     specifier: ^5.0.0
     version: registry.npmmirror.com/koa-static@5.0.0
+  koa2-cors:
+    specifier: ^2.0.6
+    version: registry.npmmirror.com/koa2-cors@2.0.6
   moment:
     specifier: ^2.29.4
     version: registry.npmmirror.com/moment@2.29.4
@@ -1001,6 +1004,13 @@ packages:
       koa-send: registry.npmmirror.com/koa-send@5.0.1
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  registry.npmmirror.com/koa2-cors@2.0.6:
+    resolution: {integrity: sha512-JRCcSM4lamM+8kvKGDKlesYk2ASrmSTczDtGUnIadqMgnHU4Ct5Gw7Bxt3w3m6d6dy3WN0PU4oMP43HbddDEWg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/koa2-cors/-/koa2-cors-2.0.6.tgz}
+    name: koa2-cors
+    version: 2.0.6
+    engines: {node: '>= 7.6.0'}
     dev: false
 
   registry.npmmirror.com/koa@2.14.2:

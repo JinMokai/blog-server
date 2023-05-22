@@ -66,6 +66,18 @@ class messageService {
         const res = await Message.destroy({ where: { id: messageId } })
         return res ? true : false
     }
+
+    /**
+     * 统计未处理留言
+     */
+    async getMessageCount() {
+        let res = await Message.count({
+            where: {
+                status: 0
+            }
+        })
+        return res
+    }
 }
 
 module.exports = new messageService()

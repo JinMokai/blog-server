@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize")
-
+const moment = require("moment")
 const seq = require("../../db/seq")
 
 /**

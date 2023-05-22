@@ -164,6 +164,18 @@ class UserService {
             current, size, total: count, list: rows
         }
     }
+
+    /**
+     * 统计用户数量
+     */
+    async getUserCount() {
+        let res = await User.count({
+            where: {
+                status: 1
+            }
+        })
+        return res
+    }
 }
 
 module.exports = new UserService()

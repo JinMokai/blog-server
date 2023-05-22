@@ -353,6 +353,16 @@ class articleService {
             return false
         }
     }
+
+    /**
+     * 获取发布文章数量
+     */
+    async getArticleCount() {
+        let res = await Article.count({
+            status: 1
+        })
+        return res
+    }
 }
 
 module.exports = new articleService()

@@ -46,6 +46,19 @@ class configService {
 
         return res ? true : false;
     }
+
+    /**
+     * 统计网站访问量
+     */
+    async getViewCount() {
+        let res = await Config.findOne({
+            attributes: ['view_count'],
+            where: {
+                id: 1
+            }
+        })
+        return res
+    }
 }
 
 module.exports = new configService()

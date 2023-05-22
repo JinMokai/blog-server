@@ -101,6 +101,14 @@ class categaryService {
         })
         return res.dataValues
     }
+
+    /**
+     * 获取分类总数
+     */
+    async getCategaryCount() {
+        let res = Categary.count()
+        return res
+    }
 }
 
 module.exports = new categaryService()

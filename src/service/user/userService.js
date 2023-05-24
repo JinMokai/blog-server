@@ -130,7 +130,7 @@ class UserService {
     }
 
     /**
-     * 分页获取用户信息(不含禁用用户)
+     * 分页获取用户信息(禁用用户)
      * @param {*}  
      */
     async getUserList({ current, size, username, role }) {
@@ -138,15 +138,13 @@ class UserService {
         const offset = (current - 1) * size
         const limit = size * 1
 
-        const whereOpt = { status: 1 }
-        // 判断用户权限数据规范的
-        if (typeof role === 'number') {
-            role && Object.assign(whereOpt, {
-                role: {
-                    [Op.eq]: role
-                }
-            })
-        }
+        // const whereOpt = { status: 1 }
+        const whereOpt = {}
+        role && Object.assign(whereOpt, {
+            role: {
+                [Op.eq]: role
+            }
+        })
         username && Object.assign(whereOpt, {
             username: {
                 [Op.like]: `%${username}%`

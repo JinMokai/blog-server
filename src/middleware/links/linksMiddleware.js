@@ -28,10 +28,10 @@ const verifyAddLinksParams = async (ctx, next) => {
     }
 
     // 校验网址头像 如果 site_avatar 不为空，则进行格式校验
-    if (site_avatar && !/^https?:\/\/[\w\-_]+(\.[\w\-_]+)+[\w\-.,@?^=%&:/~\\+#]+/.test(site_avatar)) {
-        ctx.body = ER(errCode, '网址头像格式不正确')
-        return ctx.app.emit("error", ER(errCode, '网址头像格式不正确'), ctx)
-    }
+    // if (site_avatar && !/^https?:\/\/[\w\-_]+(\.[\w\-_]+)+[\w\-.,@?^=%&:/~\\+#]+/.test(site_avatar)) {
+    //     ctx.body = ER(errCode, '网址头像格式不正确')
+    //     return ctx.app.emit("error", ER(errCode, '网址头像格式不正确'), ctx)
+    // }
     await next()
 }
 

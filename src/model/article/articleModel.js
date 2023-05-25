@@ -74,6 +74,11 @@ const article = seq.define("article", {
         allowNull: false,
         comment: "文章类型：0 原创 1 转载 默认:0"
     },
+    origin_url: {
+        type: DataTypes.STRING(2083),
+        require: true,
+        comment: "原文链接 是转载的情况下提供",
+      },
     status: {
         type: DataTypes.CHAR(1),
         defaultValue: 1,

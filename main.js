@@ -11,7 +11,7 @@ const cors = require('koa2-cors');
 const router = require("./src/router/index")
 const errHandler = require("./src/app/errHandler")
 const { APP_PORT } = require("./src/config/config.default")
-const { ER,CODE } = require("./src/result/R")
+const { ER, CODE } = require("./src/result/R")
 
 const koa = require("koa")
 const app = new koa()
@@ -24,22 +24,22 @@ app.use(cors({
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
     // 是否允许带 Cookie
     credentials: true
-  }));
+}));
 onerror(app)
-koaBody({
-    multipart: true, // 支持文件上传
-    formidable: {
-        uploadDir: path.join(__dirname, "./src/public/upload"), // 设置文件上传目录
-        keepExtensions: true, // 保持文件的后缀
-        maxFieldsSize: 2 * 1024 * 1024, // 文件上传大小
-    },
-})
+
 // http请求日志
 app.use(logger())
 // 格式化输出的json
 app.use(json())
 // 全功能解析器中间件
-app.use(koaBody())
+app.use(koaBody({
+    multipart: true, // 支持文件上传
+    formidable: {
+        uploadDir: path.join(__dirname, "./public/upload"), // 设置文件上传目录
+        keepExtensions: true, // 保持文件的后缀
+        maxFieldsSize: 2 * 1024 * 1024, // 文件上传大小
+    },
+}))
 // app parameter参数，捕获错误
 app.use(parameter(app))
 // 路由

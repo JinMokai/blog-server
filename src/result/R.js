@@ -13,7 +13,8 @@ const CODE = {
     MESSAGE: 1006, // 留言状态码
     LINKS: 1007, // 友链状态码
     CONFIG: 1008, // 配置状态码
-    STATIC: 1009  // 静态统计状态码
+    STATIC: 1009,  // 静态统计状态码
+    UPLOAD: 1010
 }
 /**
  * 返回成功结果

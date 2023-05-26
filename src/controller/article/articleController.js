@@ -146,6 +146,22 @@ class articleController {
         }
     }
 
+    /**
+     * 后台通过id获取文章
+     * @param {*} ctx 
+     * @returns 
+     */
+    async BackgetArticleById(ctx) {
+        try {
+            const { id } = ctx.params
+            const res = await articleService.BackgetArticleById(id)
+            ctx.body = R("获取文章成功", res)
+        } catch (err) {
+            console.error("文章获取失败", err)
+            return ctx.app.emit("error", ER(errcode, '文章获取失败'))
+        }
+    }
+
     // 以下为前台功能
 
     /**

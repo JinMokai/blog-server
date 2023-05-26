@@ -27,6 +27,8 @@ router.put("/updateStatus/:id/:status", auth, adminAuth, articleMiddle.updateSta
 router.put("/revert/:id", auth, adminAuth, articleController.revertArticle);
 // 分页查询文章
 router.post("/getArticleList", auth, articleController.getArticleList)
+// 通过id获取文章
+router.get("/BackgetArticleById/:id", auth, adminAuth, articleController.BackgetArticleById)
 // ----------------------后台管理功能模块  end----------------------
 
 // ----------------------前台管理功能模块  start----------------------

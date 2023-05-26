@@ -40,7 +40,24 @@ class articleService {
         }
         return res
     }
+    
+    /**
+     * 后台通过id获取文章信息
+     * @param {Number} id 
+     * @returns 
+     */
+    async BackgetArticleById(id) {
+        let article = await Article.findByPk(id)
+        // 通过分类id获取分类名称
+        const catName = await getCategaryNameById(article.cat_id)
+        // 获取文章作者
+        const username = await getUserNameById(article.user_id)
 
+        if (article) {
+            Object.assign(article.dataValues, { category: catName.name, author_name: username.username })
+        }
+        return article
+    }
     /**
      * 文章修改
      */

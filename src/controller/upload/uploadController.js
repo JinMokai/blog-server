@@ -13,21 +13,32 @@ class uploadController {
         const newPath = `/upload/${dirTime()}/${file.newFilename}`; // 上传文件要被移动到的目标位置
 
         const dirPath = newPath.slice(0, newPath.lastIndexOf('/'));
-        // console.log(newPath)
-        // console.log('===')
-        // console.log(dirPath)
+        console.log(newPath)
+        console.log('===')
+        console.log(dirPath)
         try {
-            fs.mkdir(`../../../public${dirPath}`, { recursive: true }, (err) => {
-                if (err && err.code !== 'EEXIST') throw err;
-                console.log('文件夹已经创建或已经存在：' + dirPath);
+            await new Promise((resolve, reject) => {
+                fs.mkdir(path.join(__dirname,`../../../public${dirPath}`), { recursive: true }, (err) => {
+                    if (err && err.code !== "EEXIST") {
+                        console.log("目录创建失败")
+                    } else {
+                        resolve();
+                    }
+                });
             });
-            fs.rename(oldPath, path.join(__dirname, `../../../public${newPath}`), (err) => {
-                if (err) throw err;
-                console.log('上传文件已经被移动到：' + path.join(__dirname, `../../../public${newPath}`));
+
+            await new Promise((resolve, reject) => {
+                fs.rename(oldPath, path.join(__dirname, `../../../public${newPath}`), (err) => {
+                    if (err) {
+                        console.log('文件移动失败')
+                        throw err
+                    } else {
+                        resolve();
+                    }
+                });
             });
         } catch (err) {
-            console.error(err)
-            return "error!"
+            throw err;
         }
         // 将文件路径替换一下
         const str = newPath;

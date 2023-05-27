@@ -2,6 +2,7 @@ const { where } = require("sequelize");
 const { Op } = require("sequelize")
 const Config = require("../../model/config/configModel")
 const moment = require("moment")
+const sequelize = require("../../db/seq")
 
 class configService {
     /**
@@ -57,6 +58,21 @@ class configService {
                 id: 1
             }
         })
+        return res
+    }
+
+    /**
+     * 统计每月访问量
+     */
+    async getMonthViewCount() {
+        const res = await Config.findAll({
+            attributes: [
+                [sequelize.literal('COUNT(*)'), 'view_count'],
+                [sequelize.fn('DATE_FORMAT', sequelize.col('created'), '%Y-%m'), 'month'],
+            ],
+            group: [sequelize.fn('DATE_FORMAT', sequelize.col('created'), '%Y-%m')],
+            order: [[sequelize.col('month'), 'ASC']],
+        });
         return res
     }
 }

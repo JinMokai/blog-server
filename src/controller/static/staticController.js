@@ -9,9 +9,16 @@ const { getUserCount } = require("../../service/user/userService")
 // 未处理留言数量
 const { getMessageCount } = require("../../service/message/messageService")
 // 网站访问量
-const { getViewCount } = require("../../service/config/configService")
+const { getViewCount } = require("../../service/config/configService");
+const articleService = require("../../service/article/articleService");
+const configService = require("../../service/config/configService")
 
 class staticController {
+    /**
+     * 统计各信息
+     * @param {} ctx 
+     * @returns 
+     */
     async total(ctx) {
         try {
             const { view_count } = await getViewCount()
@@ -25,6 +32,32 @@ class staticController {
         } catch (err) {
             console.log(err)
             return ctx.app.emit("error", ER(errCode, "数据统计失败"), ctx)
+        }
+    }
+
+    /**
+     * 统计每年文章的数量
+     */
+    async getArticleYearCount(ctx) {
+        try {
+            let res = await articleService.getArticleYearCount()
+            ctx.body = R(errCode, res)
+        } catch (err) {
+            console.log(err)
+            return ctx.app.emit("error", ER(errCode, "数据统计失败"), ctx)
+        }
+    }
+
+    /**
+     * 统计每月访问量
+     */
+    async getMonthViewCount(ctx) {
+        try {
+            let res = await configService.getMonthViewCount()
+            ctx.body = R(errCode, res)
+        } catch (err) {
+            console.log(err)
+            return ctx.app.emit("error", ER(errCode, "统计每月访问量失败"), ctx)
         }
     }
 }

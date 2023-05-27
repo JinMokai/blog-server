@@ -3,6 +3,7 @@ const Article = require("../../model/article/articleModel")
 const { getCategaryNameById } = require("../../controller/categary/categaryController")
 const { getUserNameById } = require("../../controller/user/userController")
 const { Op, where } = require("sequelize")
+const sequelize = require("../../db/seq")
 
 class articleService {
     /**
@@ -40,7 +41,7 @@ class articleService {
         }
         return res
     }
-    
+
     /**
      * 后台通过id获取文章信息
      * @param {Number} id 
@@ -70,7 +71,7 @@ class articleService {
         } catch (err) {
             console.error(err)
         }
-        console.log(res,'updateArticle ch_kai:')
+        console.log(res, 'updateArticle ch_kai:')
         return res[0] > 0 ? true : false
     }
 
@@ -378,6 +379,21 @@ class articleService {
         let res = await Article.count({
             status: 1
         })
+        return res
+    }
+
+    /**
+     * 统计每年文章的数量
+     */
+    async getArticleYearCount() {
+        const res = await Article.findAll({
+            attributes: [
+                [sequelize.fn('YEAR', sequelize.col('created')), 'year'],
+                [sequelize.fn('COUNT', '*'), 'article_count'],
+            ],
+            group: [sequelize.fn('YEAR', sequelize.col('created'))],
+            order: [[sequelize.fn('YEAR', sequelize.col('created')), 'DESC']],
+        });
         return res
     }
 }

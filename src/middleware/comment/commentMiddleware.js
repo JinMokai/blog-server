@@ -8,10 +8,10 @@ const errCode = CODE.COMMENT
  */
 const verifyAddParams = async (ctx, next) => {
     const { article_id, content } = ctx.request.body
-    if (typeof article_id != 'number' || typeof content != 'string') {
-        ctx.body = ER(errCode, "添加评论参数不合法")
-        return ctx.app.emit("error", ER(errCode, "添加评论参数不合法"), ctx)
-    }
+    // if (typeof article_id != 'number' || typeof content != 'string') {
+    //     ctx.body = ER(errCode, "添加评论参数不合法")
+    //     return ctx.app.emit("error", ER(errCode, "添加评论参数不合法"), ctx)
+    // }
     await next()
 }
 

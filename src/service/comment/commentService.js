@@ -41,6 +41,35 @@ class commentService {
             total: count
         }
     }
+
+    /**
+     * 根据文章id获取对应评论用户信息
+     * @param {Number} id 
+     */
+    async getArticleCommentUserInfo(id) {
+        const user_id = await Comment.findAll({
+            where: {
+                article_id: id
+            },
+            attributes: ['user_id']
+        })
+        const userArr = user_id.map(item => item.user_id)
+        return userArr
+    }
+
+    /**
+     * 通过文章id获取评论信息
+     * @param {Number} id 
+     */
+    async getCommentInfoById(id) {
+        const info = await Comment.findAll({
+            where: {
+                article_id: id
+            },
+            attributes: ['content', 'created', 'user_id']
+        })
+        return info
+    }
 }
 
 module.exports = new commentService()

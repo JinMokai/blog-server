@@ -1,4 +1,5 @@
 const commentService = require("../../service/comment/commentService")
+const { getUserInfoByComment } = require("./common")
 const { R, ER, CODE } = require("../../result/R");
 const errCode = CODE.COMMENT
 
@@ -52,6 +53,32 @@ class commentController {
         } catch (err) {
             console.error(err)
             return ctx.app.emit("error", ER(errCode, "分页获取评论失败"), ctx)
+        }
+    }
+
+    /**
+     * 根据文章id获取对应评论
+     * @param {*} ctx 
+     * @returns 
+     */
+    async getArticleComment(ctx) {
+        const { id } = ctx.params
+        try {
+            const userArr = await commentService.getArticleCommentUserInfo(id)
+            const userInfo = await getUserInfoByComment(userArr)
+            const commentInfo = await commentService.getCommentInfoById(id, { raw: true })
+            const result = commentInfo.map(comment => {
+                // 查找对应的用户信息
+                const user = userInfo.find(info => info.id === comment.user_id)
+                return {
+                    comment,
+                    username: user ? user.username : null
+                }
+            })
+            ctx.body = R("获取评论成功", result)
+        } catch (err) {
+            console.error(err)
+            return ctx.app.emit("error", ER(errCode, "获取评论失败"), ctx)
         }
     }
 }

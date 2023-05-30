@@ -341,7 +341,12 @@ class articleService {
      * 获取文章信息
      */
     async getArticleById(id) {
-        let article = await Article.findByPk(id)
+        let article = await Article.findOne({
+            where: {
+                status: 1,
+                id
+            }
+        })
         if (article) {
             // 前端访问这个 浏览量+1
             await article.increment({ view_count: 1 })

@@ -39,7 +39,7 @@ const adminAuth = async (ctx, next) => {
     const { role } = ctx.state.user
     if (Number(role) !== 1) {
         console.error("普通用户查看")
-        return ctx.app.emit("error", ER(errorCode, "普通用户仅查看"), ctx)
+        return ctx.app.emit("error", ER(66, "普通用户仅查看"), ctx)
     }
     await next()
 }

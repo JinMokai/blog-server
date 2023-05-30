@@ -11,5 +11,6 @@ router.post("/add", auth, commentMiddleware.verifyAddParams, commentController.a
 router.delete("/backdelete/:id", auth, adminAuth, commentController.backdelete)
 // 后台分页获取评论
 router.post("/backGetCommentList", auth, adminAuth, commentController.backGetCommentList)
-
+// 通过文章id获取评论信息
+router.get("/getArticleComment/:id", commentController.getArticleComment)
 module.exports = router

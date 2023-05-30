@@ -174,6 +174,20 @@ class UserService {
         })
         return res
     }
+
+    /**
+     * 通过idList数组来查询用户信息
+     * @param {Array} idList 
+     */
+    async getUserInfoByIdList(idList) {
+        const res = await User.findAll({
+            where: {
+                id: idList
+            },
+            attributes: { exclude: ['password'] }
+        })
+        return res
+    }
 }
 
 module.exports = new UserService()

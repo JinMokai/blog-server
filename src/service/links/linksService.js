@@ -107,6 +107,21 @@ class linksService {
             total: count,
         };
     }
+
+    /**
+     * 获取所有审核已通过友链
+     */
+    async getAllLinks() {
+        let res = await Links.findAll({
+            where: {
+                status: 1
+            },
+            attributes: {
+                exclude: ['id', 'status', 'created', 'updated']
+            }
+        })
+        return res
+    }
 }
 
 module.exports = new linksService()

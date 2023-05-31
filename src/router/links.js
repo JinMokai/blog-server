@@ -16,4 +16,6 @@ router.put("/delete", auth, adminAuth, linksController.deleteLinks);
 router.put("/approve", auth, adminAuth, linksController.approveLinks);
 // 分页获取友链
 router.post("/getLinksList", linksController.getLinksList);
+// 前台获取所有友链
+router.get("/getAllLinks", linksController.getAllLinks)
 module.exports = router

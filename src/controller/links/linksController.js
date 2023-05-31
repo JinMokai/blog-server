@@ -66,6 +66,20 @@ class linksController {
             return ctx.app.emit("error", ER(errCode, "查询友链失败"), ctx);
         }
     }
+
+    /**
+     * 获取所有审核已通过友链
+     * @param {*} ctx 
+     */
+    async getAllLinks(ctx) {
+        try {
+            let res = await linksService.getAllLinks()
+            ctx.body = R("查询所有已审核的所有友链", res)
+        } catch (err) {
+            console.error(err)
+            return ctx.app.emit("error", Er(errCode, "获取所有友链失败"))
+        }
+    }
 }
 
 module.exports = new linksController()

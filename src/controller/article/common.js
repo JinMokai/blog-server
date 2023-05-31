@@ -21,6 +21,12 @@ const createCategoryAndArticle = async (name) => {
     return cid
 }
 
+const getCategaryInfo = async (idList) => {
+    let res = await categaryService.getCategaryInfo(idList)
+    return res
+}
+
 module.exports = {
-    createCategoryAndArticle
+    createCategoryAndArticle,
+    getCategaryInfo
 }

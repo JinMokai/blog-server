@@ -1,6 +1,6 @@
 const articleService = require("../../service/article/articleService")
 const { R, ER, CODE } = require("../../result/R")
-const { createCategoryAndArticle } = require("./common")
+const { createCategoryAndArticle, getCategaryInfo } = require("./common")
 const seq = require("../../db/seq")
 const errcode = CODE.CATEGARY
 
@@ -240,6 +240,34 @@ class articleController {
         } catch (err) {
             console.error("文章点赞失败", err)
             return ctx.app.emit("error", ER(errcode, "文章点赞失败"), ctx)
+        }
+    }
+
+    /**
+     * 获取公开文章 分类次数和名字
+     */
+    async getArticleCategory(ctx) {
+        try {
+            let publicArticleList = await articleService.getArticleCategoryCount()
+            let catIds = publicArticleList.map((item) => item.cat_id)
+            let categaryInfo = await getCategaryInfo(catIds)
+            // 通过分类id:Array 获取文章信息
+            let articleInfo = await articleService.getCatIdByArticle(catIds)
+            // 为公开文章获取分类次数名称
+            for (let i = 0; i < publicArticleList.length; i++) {
+                // catgaryId 这是一个唯一值
+                const catgaryId = publicArticleList[i].cat_id
+                const categary = categaryInfo.find((item) => item.id === catgaryId)
+                if (categary) {
+                    publicArticleList[i].dataValues.categoryName = categary.name
+                }
+                const article = articleInfo.filter((item) => item.cat_id === catgaryId)
+                publicArticleList[i].dataValues.list = article
+            }
+            ctx.body = R("公开文章获取成功", publicArticleList)
+        } catch (err) {
+            console.error("error", err)
+            return ctx.app.emit("error", ER(errcode, "error"), ctx)
         }
     }
 }

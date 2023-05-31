@@ -401,6 +401,39 @@ class articleService {
         });
         return res
     }
+
+    /**
+     * 获取公开文章 分类次数和名字
+     * @returns 
+     */
+    async getArticleCategoryCount() {
+        const result = await Article.findAll({
+            attributes: ['cat_id', [sequelize.fn('COUNT', sequelize.col('cat_id')), 'categoryCount']],
+            where: {
+                status: 1
+            },
+            group: 'cat_id'
+        })
+        return result
+    }
+
+    /**
+     * 通过分类获取公开文章
+     * @param {Array} idList 
+     * @returns 
+     */
+    async getCatIdByArticle(idList) {
+        const articles = await Article.findAll({
+            attributes: ['id', 'title', 'cat_id'],
+            where: {
+                cat_id: {
+                    [Op.in]: idList
+                },
+                status: 1
+            }
+        })
+        return articles
+    }
 }
 
 module.exports = new articleService()

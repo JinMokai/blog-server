@@ -109,6 +109,18 @@ class categaryService {
         let res = Categary.count()
         return res
     }
+
+    /**
+     * 通过数组获取分类信息
+     */
+    async getCategaryInfo(idList) {
+        let res = Categary.findAll({
+            where: {
+                id: idList
+            }
+        })
+        return res
+    }
 }
 
 module.exports = new categaryService()

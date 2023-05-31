@@ -42,6 +42,8 @@ router.get("/getRecommendArticleById/:id", articleController.getRecommendArticle
 router.get("/getHotArticle", articleController.getHotArticle);
 // 文章点赞
 router.get("/articleThumbsUp/:id", articleController.articleThumbsUp)
+// 前台获取未禁用文章分类
+router.get("/getArticleCategory", articleController.getArticleCategory)
 // ----------------------前台管理功能模块  end----------------------
 // 通过id获取文章
 router.get("/getArticleById/:id", articleController.getArticleById)

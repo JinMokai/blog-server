@@ -14,11 +14,11 @@ class commentService {
     }
 
     /**
-     * 删除评论
+     * 批量删除评论
      * @param {Number} id 
      */
-    async backdelete(id) {
-        const res = await Comment.destroy({ where: { id } })
+    async backdelete(idList) {
+        const res = await Comment.destroy({ where: { id: idList } })
         console.log(res)
         return res
     }
@@ -27,12 +27,17 @@ class commentService {
      * 后台分页获取评论
      * @param {Number} current - 当前页码
      * @param {Number} size - 每页数据条数
+     * @param {Number} article_id 文章id
+     * @returns 
      */
-    async backGetCommentList(current, size) {
+    async backGetCommentList(current, size, article_id) {
         const offset = (current - 1) * size
         const limit = size * 1
+        const whereOpt = {}
+        article_id && Object.assign(whereOpt, { article_id })
         const { count, rows } = await Comment.findAndCountAll({
-            offset, limit
+            offset, limit,
+            where: whereOpt
         })
         return {
             current,
@@ -69,6 +74,18 @@ class commentService {
             attributes: ['content', 'created', 'user_id']
         })
         return info
+    }
+
+    /**
+     * 获取所有有评论的文章列表
+     */
+    async getCommentArticle() {
+        let articleIds = await Comment.findAll({
+            attributes: ['article_id'],
+            group: ['article_id']
+        })
+        let ids = articleIds.map(item => item.article_id)
+        return ids
     }
 }
 

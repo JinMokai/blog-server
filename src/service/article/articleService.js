@@ -20,6 +20,19 @@ class articleService {
     }
 
     /**
+     * 通过ids列表获取文章标题
+     * @param {Array} idList 
+     */
+    async getArticleTitleByIds(idList) {
+        let res = await Article.findAll({
+            attributes: ['id', 'title'],
+            where: {
+                id: idList
+            }
+        })
+        return res
+    }
+    /**
      * 文章查询
      * @param {Object} param
      * @returns {Boolean} true | false

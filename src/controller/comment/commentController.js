@@ -1,5 +1,5 @@
 const commentService = require("../../service/comment/commentService")
-const { getUserInfoByComment } = require("./common")
+const { getUserInfoByComment, getArticleTitle } = require("./common")
 const { R, ER, CODE } = require("../../result/R");
 const errCode = CODE.COMMENT
 
@@ -21,12 +21,12 @@ class commentController {
     }
 
     /**
-     * 删除评论
+     * 批量删除评论
      */
     async backdelete(ctx) {
-        const { id } = ctx.params
+        const { idList } = ctx.request.body
         try {
-            const res = await commentService.backdelete(id)
+            const res = await commentService.backdelete(idList)
             ctx.body = R("删除评论成功", res)
         } catch (err) {
             console.error(err)
@@ -46,9 +46,20 @@ class commentController {
     *                            total 表示符合条件的总记录数。
     */
     async backGetCommentList(ctx) {
-        const { current, size } = ctx.request.body
+        const { current, size, article_id } = ctx.request.body
         try {
-            const res = await commentService.backGetCommentList(current, size)
+            const res = await commentService.backGetCommentList(current, size, article_id)
+            // 获取所有用户id列表
+            const userArr = res.list.map((item) => item.user_id)
+            // 获取用户信息
+            let userInfo = await getUserInfoByComment(userArr)
+            for (let i = 0; i < res.list.length; i++) {
+                const userId = res.list[i].user_id
+                const user = userInfo.find((item) => item.id === userId)
+                if (user) {
+                    res.list[i].dataValues.username = user.username
+                }
+            }
             ctx.body = R("分页获取评论成功", res)
         } catch (err) {
             console.error(err)
@@ -78,6 +89,21 @@ class commentController {
             ctx.body = R("获取评论成功", result)
         } catch (err) {
             console.error(err)
+            return ctx.app.emit("error", ER(errCode, "获取评论失败"), ctx)
+        }
+    }
+
+    /**
+     * 获取所有有评论的文章列表
+     */
+    async getCommentArticle(ctx) {
+        try {
+            // 有评论的文章id: Array
+            let articleIds = await commentService.getCommentArticle()
+            let exitArticleList = await getArticleTitle(articleIds)
+            ctx.body = R("获取评论成功", exitArticleList)
+        } catch (err) {
+            console.log(err)
             return ctx.app.emit("error", ER(errCode, "获取评论失败"), ctx)
         }
     }

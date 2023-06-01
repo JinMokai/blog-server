@@ -36,7 +36,8 @@ class messageService {
         const offset = (current - 1) * size
         const limit = size * 1
         const { count, rows } = await Message.findAndCountAll({
-            offset, limit
+            offset, limit,
+            order: [["created", "DESC"]]
         })
         return {
             current,
